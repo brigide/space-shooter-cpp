@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 
 #include "Ship.h"
+#include "Shot.h"
 #include "AnimSpriteComponent.h"
 #include "Game.h"
 
@@ -53,7 +54,7 @@ void Ship::UpdateActor(float deltaTime)
 	SetPosition(pos);
 }
 
-void Ship::ProcessKeyboard(const uint8_t* state)
+bool Ship::ProcessKeyboard(const uint8_t* state)
 {
 	mRightSpeed = 0.0f;
 	mDownSpeed = 0.0f;
@@ -75,4 +76,9 @@ void Ship::ProcessKeyboard(const uint8_t* state)
 	{
 		mDownSpeed -= 300.0f;
 	}
+	if (state[SDL_SCANCODE_K]) 
+	{
+		return true;
+	}
+	return false;
 }

@@ -13,6 +13,7 @@
 #include "SpriteComponent.h"
 #include "Ship.h"
 #include "Enemy.h"
+#include "Shot.h"
 #include "BGSpriteComponent.h"
 #include "AnimSpriteComponent.h"
 
@@ -58,6 +59,7 @@ bool Game::Initialize()
 	mTicksCount = SDL_GetTicks();
 
 	spawnTime = 0;
+	shotTime = 0;
 	
 	return true;
 }
@@ -74,6 +76,8 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
+	shotTime++;
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -92,7 +96,21 @@ void Game::ProcessInput()
 	}
 
 	// Process ship input
-	mShip->ProcessKeyboard(state);
+	if (mShip->ProcessKeyboard(state))
+	{
+		if (shotTime > 30) {
+			Shot* shot = new Shot(this);
+
+			Vector2 pos = mShip->GetPosition();
+			pos.x += 15.0f;
+			pos.y += 5.0f;
+
+			shot->SetPosition(pos);
+			shots.emplace_back(shot);
+
+			shotTime = 0;
+		}
+	}
 }
 
 void Game::UpdateGame()
@@ -110,14 +128,31 @@ void Game::UpdateGame()
 	mTicksCount = SDL_GetTicks();
 	spawnTime++;
 
-	if (enemies.size() != 10 && spawnTime % 150 == 0) {
+	if (spawnTime % 100 == 0) {
 		Enemy* newEnemy = new Enemy(this);
 		enemies.emplace_back(newEnemy);
 	}
 
 	for (auto enemy : enemies) {
-		if (enemy->GetPosition().x <= 0.0f) {
+		if (enemy->GetPosition().x <= 0.0f && enemy->GetPosition().x >= -1000.f) {
 			mIsRunning = false;
+		}
+	}
+
+	for (auto shot : shots)
+	{
+		for (auto enemy : enemies)
+		{
+			Vector2 shotPos = shot->GetPosition();
+			Vector2 enemyPos = enemy->GetPosition();
+			if (shotPos.x >= enemyPos.x && 
+				shotPos.y >= enemyPos.y - 70.0f &&
+				shotPos.y <= enemyPos.y + 70.0f)
+			{
+				//delete enemy;
+				enemy->SetState(Actor::EDead);
+				shot->SetState(Actor::EDead);
+			}
 		}
 	}
 	

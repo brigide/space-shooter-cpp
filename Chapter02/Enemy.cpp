@@ -5,7 +5,7 @@
 
 Enemy::Enemy(Game* game)
 	:Actor(game)
-	, mRightSpeed(-100.0f)
+	, mRightSpeed(-150.0f)
 	, mDownSpeed(0.0f)
 {
 	// Create an animated sprite component

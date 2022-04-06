@@ -56,6 +56,8 @@ private:
 	class Ship* mShip; // Player's ship
 
 	std::vector<class Enemy*> enemies;
+	std::vector<class Shot*> shots;
 
 	int spawnTime;
+	int shotTime;
 };
