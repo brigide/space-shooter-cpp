@@ -14,8 +14,8 @@ Shot::Shot(Game* game)
 	};
 	asc->SetAnimTextures(anims);
 
-	int y = (rand() % 678) + 100;
-	SetPosition(Vector2(900.0f, y));
+	//int y = (rand() % 678) + 100;
+	//SetPosition(Vector2(900.0f, y));
 }
 
 void Shot::UpdateActor(float deltaTime)

@@ -128,33 +128,56 @@ void Game::UpdateGame()
 	mTicksCount = SDL_GetTicks();
 	spawnTime++;
 
-	if (spawnTime % 100 == 0) {
+	if (spawnTime > 100) {
+		spawnTime = 0;
 		Enemy* newEnemy = new Enemy(this);
+		newEnemy->SetScale(1.0f);
 		enemies.emplace_back(newEnemy);
 	}
 
-	for (auto enemy : enemies) {
-		if (enemy->GetPosition().x <= 0.0f && enemy->GetPosition().x >= -1000.f) {
-			mIsRunning = false;
+	//for (auto enemy : enemies) {
+	//	if (enemy->GetPosition().x <= 0.0f && enemy->GetPosition().x >= -100.f) {
+	//		mIsRunning = false;
+	//	}
+	//}
+
+	for (auto shot : shots) {
+		if (shot->GetPosition().x > 1250.0f) {
+			shot->SetState(Actor::EDead);
 		}
 	}
 
-	for (auto shot : shots)
+	bool deleteActors = false;
+	int enemyIndex = 0;
+	int shotIndex = 0;
+	for (int i = 0; i < shots.size(); i++)
 	{
-		for (auto enemy : enemies)
+		for (int j = 0; j < enemies.size(); j++)
 		{
-			Vector2 shotPos = shot->GetPosition();
-			Vector2 enemyPos = enemy->GetPosition();
+			Vector2 shotPos = shots[i]->GetPosition();
+			Vector2 enemyPos = enemies[j]->GetPosition();
 			if (shotPos.x >= enemyPos.x && 
 				shotPos.y >= enemyPos.y - 70.0f &&
 				shotPos.y <= enemyPos.y + 70.0f)
 			{
+				deleteActors = true;
 				//delete enemy;
-				enemy->SetState(Actor::EDead);
-				shot->SetState(Actor::EDead);
+				enemies[j]->SetState(Actor::EDead);
+				shots[i]->SetState(Actor::EDead);
+
+				enemyIndex = j;
+				shotIndex = i;
+				//delete enemy;
+				//delete shot;
 			}
 		}
 	}
+	if (deleteActors) {
+		enemies.erase(enemies.begin() + enemyIndex);
+		shots.erase(shots.begin() + shotIndex);
+	}
+	//enemies.clear();
+	//shots.clear();
 	
 
 	// Update all actors
