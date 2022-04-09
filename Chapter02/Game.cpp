@@ -167,8 +167,6 @@ void Game::UpdateGame()
 
 				enemyIndex = j;
 				shotIndex = i;
-				//delete enemy;
-				//delete shot;
 			}
 		}
 	}
@@ -176,8 +174,6 @@ void Game::UpdateGame()
 		enemies.erase(enemies.begin() + enemyIndex);
 		shots.erase(shots.begin() + shotIndex);
 	}
-	//enemies.clear();
-	//shots.clear();
 	
 
 	// Update all actors
